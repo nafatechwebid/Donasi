@@ -1,0 +1,12 @@
+# Salin file ini menjadi .env.local lalu isi dengan kredensial asli.
+# JANGAN PERNAH commit file .env.local ke GitHub (sudah masuk .gitignore).
+
+# Didapat dari Supabase Dashboard -> Project Settings -> API
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=isi-anon-key-di-sini
+
+# Didapat dari Cloudinary Dashboard -> Home (Product Environment Credentials)
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=isi-cloud-name
+CLOUDINARY_API_KEY=isi-api-key
+CLOUDINARY_API_SECRET=isi-api-secret
+NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=donasi_unsigned
