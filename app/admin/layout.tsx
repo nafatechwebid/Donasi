@@ -3,6 +3,8 @@ import Link from "next/link";
 const links: { href: string; label: string }[] = [
   { href: "/admin", label: "Dasbor" },
   { href: "/admin/kampanye", label: "Kampanye" },
+  { href: "/admin/donasi", label: "Donasi" },
+  { href: "/admin/pembayaran", label: "Pembayaran" },
   { href: "/admin/kategori", label: "Kategori" },
   { href: "/", label: "Beranda" },
 ];
