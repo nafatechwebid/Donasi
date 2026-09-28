@@ -31,7 +31,7 @@ export default async function ReceiptPage({ params }: { params: { id: string } }
     .maybeSingle();
   if (!data || data.status !== "verified") notFound();
 
-  const campaignTitle = (data.campaigns as { title: string } | null)?.title ?? "-";
+  const campaignTitle = (data.campaigns as unknown as { title: string } | null)?.title ?? "-";
 
   return (
     <main className="mx-auto max-w-lg px-6 py-10">
