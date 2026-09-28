@@ -16,7 +16,7 @@ jobs:
             -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
           echo "HTTP status: $response"
-          if [ "$response" -ge 200 ]; then
+          if [ "$response" != "200" ]; then
             echo "::error::Ping ke Supabase gagal (status $response)"
             exit 1
           fi
