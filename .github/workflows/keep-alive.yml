@@ -7,7 +7,7 @@ on:
 
 jobs:
   ping-supabase:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Ping Supabase REST endpoint
         run: |
@@ -16,7 +16,7 @@ jobs:
             -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
           echo "HTTP status: $response"
-          if [ "$response" -ge 400 ]; then
+          if [ "$response" -ge 200 ]; then
             echo "::error::Ping ke Supabase gagal (status $response)"
             exit 1
           fi
