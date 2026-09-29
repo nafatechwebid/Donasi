@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import SubmitButton from "@/components/SubmitButton";
 import { requireAdmin } from "@/lib/auth";
 import CampaignForm, { type CampaignData, type CategoryOption } from "@/components/CampaignForm";
 import CloudinaryUpload from "@/components/CloudinaryUpload";
