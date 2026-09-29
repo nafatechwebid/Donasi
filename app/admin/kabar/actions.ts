@@ -55,6 +55,39 @@ export async function addUpdate(formData: FormData): Promise<void> {
   return redirect(`${back}?ok=${encodeURIComponent("Kabar terbaru ditambahkan")}`);
 }
 
+export async function updateUpdate(formData: FormData): Promise<void> {
+  const { supabase } = await requireAdmin();
+  const id = str(formData, "id");
+  const campaignId = str(formData, "campaign_id");
+  const back = `/admin/kampanye/${campaignId}`;
+  if (!UUID.safeParse(id).success) return redirect(back);
+
+  const parsed = schema.safeParse({
+    campaign_id: campaignId,
+    title: str(formData, "title"),
+    content: str(formData, "content"),
+    image_url: str(formData, "image_url") || null,
+  });
+  if (!parsed.success) {
+    return redirect(
+      `${back}/kabar/${id}/edit?error=${encodeURIComponent(parsed.error.issues[0]?.message ?? "Data tidak valid")}`
+    );
+  }
+  const v = parsed.data;
+
+  const { error } = await supabase
+    .from("campaign_updates")
+    .update({ title: v.title, content: v.content, image_url: v.image_url })
+    .eq("id", id);
+  if (error) {
+    return redirect(`${back}/kabar/${id}/edit?error=${encodeURIComponent(error.message)}`);
+  }
+
+  revalidatePath(`/kampanye`);
+  revalidatePath(back);
+  return redirect(`${back}?ok=${encodeURIComponent("Kabar diperbarui")}`);
+}
+
 export async function deleteUpdate(formData: FormData): Promise<void> {
   const { supabase } = await requireAdmin();
   const id = str(formData, "id");
