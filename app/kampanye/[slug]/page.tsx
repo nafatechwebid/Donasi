@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import SiteHeader from "@/components/SiteHeader";
 import Countdown from "@/components/Countdown";
 import CommentForm from "@/components/CommentForm";
+import LikeButton from "@/components/LikeButton";
 import { cldUrl } from "@/lib/cloudinary";
 import { createClient } from "@/lib/supabase/server";
 import { formatRupiah, progressPercent } from "@/lib/utils";
@@ -140,6 +141,10 @@ export default async function CampaignPage({ params }: Props) {
           </p>
         ) : null}
         <h1 className="mt-1 font-serif text-2xl text-neutral-900">{c.title}</h1>
+
+        <div className="mt-3">
+          <LikeButton campaignId={c.id} variant="detail" />
+        </div>
 
         <section className="mt-5 rounded-xl border border-neutral-200 p-4">
           <p className="text-2xl font-semibold text-brand-dark">{formatRupiah(collected)}</p>
