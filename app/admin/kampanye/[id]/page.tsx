@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
-import SubmitButton from "@/components/SubmitButton";
+import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
 import CampaignForm, { type CampaignData, type CategoryOption } from "@/components/CampaignForm";
 import CloudinaryUpload from "@/components/CloudinaryUpload";
+import SubmitButton from "@/components/SubmitButton";
 import { cldUrl } from "@/lib/cloudinary";
 import { formatRupiah } from "@/lib/utils";
 import { deleteCampaign, saveCampaign } from "@/app/admin/kampanye/actions";
@@ -87,13 +88,18 @@ export default async function EditPage({
             <li key={u.id} className="rounded-lg border border-neutral-200 p-3">
               <div className="flex items-start justify-between gap-2">
                 <p className="text-sm font-medium text-neutral-900">{u.title}</p>
-                <form action={deleteUpdate}>
-                  <input type="hidden" name="id" value={u.id} />
-                  <input type="hidden" name="campaign_id" value={c.id} />
-                  <button type="submit" className="text-xs text-red-600 underline">
-                    Hapus
-                  </button>
-                </form>
+                <div className="flex flex-none gap-3">
+                  <Link href={`/admin/kabar/${u.id}/edit`} className="text-xs text-brand underline">
+                    Edit
+                  </Link>
+                  <form action={deleteUpdate}>
+                    <input type="hidden" name="id" value={u.id} />
+                    <input type="hidden" name="campaign_id" value={c.id} />
+                    <button type="submit" className="text-xs text-red-600 underline">
+                      Hapus
+                    </button>
+                  </form>
+                </div>
               </div>
               <p className="text-xs text-neutral-500">{fmtDate(u.created_at)}</p>
               <p className="mt-1 whitespace-pre-line text-sm text-neutral-700">{u.content}</p>
@@ -114,7 +120,7 @@ export default async function EditPage({
           </label>
           <CloudinaryUpload name="image_url" label="Foto (opsional)" />
           <SubmitButton className="rounded-md bg-brand px-4 py-3 text-white hover:bg-brand-dark disabled:opacity-60">
-            Simpan laporan
+            Publikasikan kabar
           </SubmitButton>
         </form>
       </section>
@@ -143,13 +149,18 @@ export default async function EditPage({
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-sm font-medium text-neutral-900">{formatRupiah(Number(e.amount))}</p>
-                    <form action={deleteExpenditure}>
-                      <input type="hidden" name="id" value={e.id} />
-                      <input type="hidden" name="campaign_id" value={c.id} />
-                      <button type="submit" className="text-xs text-red-600 underline">
-                        Hapus
-                      </button>
-                    </form>
+                    <div className="flex flex-none gap-3">
+                      <Link href={`/admin/pengeluaran/${e.id}/edit`} className="text-xs text-brand underline">
+                        Edit
+                      </Link>
+                      <form action={deleteExpenditure}>
+                        <input type="hidden" name="id" value={e.id} />
+                        <input type="hidden" name="campaign_id" value={c.id} />
+                        <button type="submit" className="text-xs text-red-600 underline">
+                          Hapus
+                        </button>
+                      </form>
+                    </div>
                   </div>
                   <p className="text-xs text-neutral-500">{fmtDate(e.spent_at)}</p>
                   <p className="mt-1 text-sm text-neutral-700">{e.description}</p>
@@ -184,9 +195,9 @@ export default async function EditPage({
             <input type="date" name="spent_at" required className={inputCls} />
           </label>
           <CloudinaryUpload name="proof_url" label="Bukti (kuitansi/nota/foto penyerahan)" />
-          <button type="submit" className="rounded-md bg-brand px-4 py-3 text-white hover:bg-brand-dark">
+          <SubmitButton className="rounded-md bg-brand px-4 py-3 text-white hover:bg-brand-dark disabled:opacity-60">
             Simpan laporan
-          </button>
+          </SubmitButton>
         </form>
       </section>
 
