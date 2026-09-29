@@ -112,9 +112,9 @@ export default async function EditPage({
             <textarea name="content" required rows={4} maxLength={5000} className={inputCls} />
           </label>
           <CloudinaryUpload name="image_url" label="Foto (opsional)" />
-          <button type="submit" className="rounded-md bg-brand px-4 py-3 text-white hover:bg-brand-dark">
-            Publikasikan kabar
-          </button>
+          <SubmitButton className="rounded-md bg-brand px-4 py-3 text-white hover:bg-brand-dark disabled:opacity-60">
+            Simpan laporan
+          </SubmitButton>
         </form>
       </section>
 
