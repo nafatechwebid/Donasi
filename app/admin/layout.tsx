@@ -6,6 +6,7 @@ const links: { href: string; label: string }[] = [
   { href: "/admin/donasi", label: "Donasi" },
   { href: "/admin/pembayaran", label: "Pembayaran" },
   { href: "/admin/kategori", label: "Kategori" },
+  { href: "/admin/komentar", label: "Komentar" },
   { href: "/", label: "Beranda" },
 ];
 
