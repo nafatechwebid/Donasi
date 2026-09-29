@@ -58,6 +58,46 @@ export async function addExpenditure(formData: FormData): Promise<void> {
   return redirect(`${back}?ok=${encodeURIComponent("Laporan pengeluaran ditambahkan")}`);
 }
 
+export async function updateExpenditure(formData: FormData): Promise<void> {
+  const { supabase } = await requireAdmin();
+  const id = str(formData, "id");
+  const campaignId = str(formData, "campaign_id");
+  const back = `/admin/kampanye/${campaignId}`;
+  if (!UUID.safeParse(id).success) return redirect(back);
+
+  const parsed = schema.safeParse({
+    campaign_id: campaignId,
+    description: str(formData, "description"),
+    amount: Number(str(formData, "amount").replace(/\D/g, "")),
+    spent_at: str(formData, "spent_at"),
+    proof_url: str(formData, "proof_url"),
+  });
+  if (!parsed.success) {
+    return redirect(
+      `${back}/pengeluaran/${id}/edit?error=${encodeURIComponent(parsed.error.issues[0]?.message ?? "Data tidak valid")}`
+    );
+  }
+  const v = parsed.data;
+
+  const { error } = await supabase
+    .from("expenditures")
+    .update({
+      description: v.description,
+      amount: v.amount,
+      spent_at: v.spent_at,
+      proof_url: v.proof_url,
+    })
+    .eq("id", id);
+  if (error) {
+    return redirect(`${back}/pengeluaran/${id}/edit?error=${encodeURIComponent(error.message)}`);
+  }
+
+  revalidatePath(`/kampanye`);
+  revalidatePath(`/laporan-keuangan`);
+  revalidatePath(back);
+  return redirect(`${back}?ok=${encodeURIComponent("Laporan pengeluaran diperbarui")}`);
+}
+
 export async function deleteExpenditure(formData: FormData): Promise<void> {
   const { supabase } = await requireAdmin();
   const id = str(formData, "id");
