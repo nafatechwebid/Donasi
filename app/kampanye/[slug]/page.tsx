@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import SiteHeader from "@/components/SiteHeader";
 import Countdown from "@/components/Countdown";
+import CommentForm from "@/components/CommentForm";
 import { cldUrl } from "@/lib/cloudinary";
 import { createClient } from "@/lib/supabase/server";
 import { formatRupiah, progressPercent } from "@/lib/utils";
@@ -28,6 +29,7 @@ type Detail = {
 type DonorRow = { display_name: string; amount: number; message: string | null; created_at: string };
 type UpdateRow = { id: string; title: string; content: string; image_url: string | null; created_at: string };
 type ExpRow = { id: string; description: string; amount: number; proof_url: string; spent_at: string };
+type CommentRow = { id: string; display_name: string; message: string; created_at: string };
 
 async function getCampaign(slug: string): Promise<Detail | null> {
   const supabase = createClient();
@@ -74,7 +76,7 @@ export default async function CampaignPage({ params }: Props) {
   if (!c) notFound();
 
   const supabase = createClient();
-  const [donorsRes, countRes, updatesRes, expRes] = await Promise.all([
+  const [donorsRes, countRes, updatesRes, expRes, commentsRes, userRes] = await Promise.all([
     supabase.rpc("get_campaign_donors", { p_campaign_id: c.id, p_limit: 20 }),
     supabase.rpc("get_campaign_donor_count", { p_campaign_id: c.id }),
     supabase
@@ -87,12 +89,27 @@ export default async function CampaignPage({ params }: Props) {
       .select("id,description,amount,proof_url,spent_at")
       .eq("campaign_id", c.id)
       .order("spent_at", { ascending: false }),
+    supabase
+      .from("comments")
+      .select("id,display_name,message,created_at")
+      .eq("campaign_id", c.id)
+      .eq("is_hidden", false)
+      .order("created_at", { ascending: false })
+      .limit(50),
+    supabase.auth.getUser(),
   ]);
   const donors = (donorsRes.data ?? []) as DonorRow[];
   const donorCount = Number(countRes.data ?? 0);
   const updates = (updatesRes.data ?? []) as UpdateRow[];
   const expenditures = (expRes.data ?? []) as ExpRow[];
-  const totalSpent = expenditures.reduce((s, e) => s + Number(e.amount), 0);
+  const comments = (commentsRes.data ?? []) as CommentRow[];
+
+  let defaultName = "";
+  const user = userRes.data.user;
+  if (user) {
+    const { data: p } = await supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle();
+    defaultName = (p?.full_name as string | null) ?? "";
+  }
 
   const img = cldUrl(c.cover_image_url, 1200);
   const collected = Number(c.collected_amount);
@@ -100,6 +117,7 @@ export default async function CampaignPage({ params }: Props) {
   const pct = progressPercent(collected, target);
   const isClosed = c.status === "closed";
   const expired = Boolean(c.is_deadline_active && c.deadline && new Date(c.deadline).getTime() < Date.now());
+  const totalSpent = expenditures.reduce((s, e) => s + Number(e.amount), 0);
 
   const host = headers().get("host");
   const shareUrl = host ? `https://${host}/kampanye/${c.slug}` : "";
@@ -185,9 +203,7 @@ export default async function CampaignPage({ params }: Props) {
                   <li key={u.id} className="rounded-lg border border-neutral-200 p-4">
                     <p className="text-xs text-neutral-500">{fmtDate(u.created_at)}</p>
                     <p className="mt-1 font-medium text-neutral-900">{u.title}</p>
-                    {uimg ? (
-                      <img src={uimg} alt={u.title} className="mt-2 w-full rounded-md object-cover" />
-                    ) : null}
+                    {uimg ? <img src={uimg} alt={u.title} className="mt-2 w-full rounded-md object-cover" /> : null}
                     <p className="mt-2 whitespace-pre-line text-sm text-neutral-700">{u.content}</p>
                   </li>
                 );
@@ -223,6 +239,27 @@ export default async function CampaignPage({ params }: Props) {
             </ul>
           </section>
         ) : null}
+
+        <section className="mt-8">
+          <h2 className="font-serif text-xl text-brand-dark">Doa &amp; Dukungan</h2>
+          <div className="mt-3">
+            <CommentForm campaignId={c.id} defaultName={defaultName} />
+          </div>
+          <ul className="mt-4 flex flex-col gap-3">
+            {comments.length === 0 ? (
+              <li className="text-sm text-neutral-500">Jadilah yang pertama mengirim doa dan dukungan.</li>
+            ) : null}
+            {comments.map((cm) => (
+              <li key={cm.id} className="rounded-lg border border-neutral-200 p-3">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-sm font-medium text-neutral-900">{cm.display_name}</p>
+                  <p className="text-xs text-neutral-500">{timeAgo(cm.created_at)}</p>
+                </div>
+                <p className="mt-1 text-sm text-neutral-700">{cm.message}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         <section className="mt-8">
           <h2 className="font-serif text-xl text-brand-dark">Donatur ({donorCount})</h2>
