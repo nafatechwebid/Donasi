@@ -63,11 +63,11 @@ export default function RegisterPage({
               name="password"
               type="password"
               required
-              minLength={6}
+              minLength={8}
               autoComplete="new-password"
               className={inputCls}
             />
-            <p className="mt-1 text-xs text-neutral-500">Minimal 6 karakter.</p>
+            <p className="mt-1 text-xs text-neutral-500">Minimal 8 karakter.</p>
           </div>
           <button
             type="submit"
