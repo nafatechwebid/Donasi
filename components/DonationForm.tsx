@@ -139,7 +139,7 @@ export default function DonationForm({ campaignId, channels, defaultName, defaul
           Sembunyikan nama saya (tampil sebagai &quot;Hamba Allah&quot;)
         </label>
         <label className="block">
-          <span className="text-sm text-neutral-700">Email (opsional, untuk tanda terima)</span>
+          <span className="text-sm text-neutral-700">Email (opsional)</span>
           <input
             name="donor_email"
             type="email"
@@ -147,6 +147,9 @@ export default function DonationForm({ campaignId, channels, defaultName, defaul
             maxLength={120}
             className={inputCls}
           />
+          <span className="mt-1 block text-xs text-neutral-500">
+            Isi email jika ingin menerima konfirmasi dan riwayat donasi lewat email.
+          </span>
         </label>
         <label className="block">
           <span className="text-sm text-neutral-700">Doa atau pesan dukungan (opsional)</span>
