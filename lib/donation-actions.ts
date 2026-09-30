@@ -54,6 +54,14 @@ export async function submitDonation(input: DonationInput): Promise<Result> {
     return { ok: false, error: "Metode pembayaran tidak tersedia" };
   }
 
+  const { data: rc } = await supabase.rpc("recent_donation_counts", { p_email: v.donorEmail });
+  const rate = (Array.isArray(rc) ? rc[0] : rc) as
+    | { last_10min: number; email_last_hour: number }
+    | null;
+  const recent10 = Number(rate?.last_10min ?? 0);
+  if (recent10 >= 20 || Number(rate?.email_last_hour ?? 0) >= 5) {
+    return { ok: false, error: "Terlalu banyak donasi dalam waktu singkat. Coba lagi beberapa menit lagi." };
+  }
   const { error } = await supabase.from("donations").insert({
     campaign_id: v.campaignId,
     donor_id: user?.id ?? null,
@@ -74,7 +82,7 @@ export async function submitDonation(input: DonationInput): Promise<Result> {
     return { ok: false, error: "Gagal menyimpan donasi. Coba lagi beberapa saat." };
   }
 
-  await kirimNotifikasiAdmin({
+  if (recent10 < 5) await kirimNotifikasiAdmin({
     nama: v.donorName
       ? v.isAnonymous
         ? `${v.donorName} (anonim di publik)`
