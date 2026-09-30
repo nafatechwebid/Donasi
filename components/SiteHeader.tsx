@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { signOut } from "@/lib/signout-action";
 
 export default async function SiteHeader() {
   const supabase = createClient();
@@ -15,9 +16,16 @@ export default async function SiteHeader() {
         </Link>
         <nav className="flex items-center gap-2 text-sm">
           {user ? (
-            <Link href="/dashboard" className="rounded-md px-3 py-2 text-neutral-700 hover:bg-brand-light">
-              Dasbor
-            </Link>
+            <>
+              <Link href="/dashboard" className="rounded-md px-3 py-2 text-neutral-700 hover:bg-brand-light">
+                Dasbor
+              </Link>
+              <form action={signOut}>
+                <button type="submit" className="rounded-md px-3 py-2 text-neutral-700 hover:bg-brand-light">
+                  Keluar
+                </button>
+              </form>
+            </>
           ) : (
             <>
               <Link href="/login" className="rounded-md px-3 py-2 text-neutral-700 hover:bg-brand-light">
