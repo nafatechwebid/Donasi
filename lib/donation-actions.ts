@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { donationSchema, type DonationInput } from "@/lib/donation-schema";
+import { kirimNotifikasiAdmin } from "@/lib/emailjs";
 
 type Result = { ok: boolean; error?: string; slug?: string };
 
@@ -29,7 +30,7 @@ export async function submitDonation(input: DonationInput): Promise<Result> {
 
   const { data: campaign } = await supabase
     .from("campaigns")
-    .select("id,slug,status,deadline,is_deadline_active")
+    .select("id,slug,title,status,deadline,is_deadline_active")
     .eq("id", v.campaignId)
     .maybeSingle();
   if (!campaign || campaign.status !== "active") {
@@ -72,6 +73,17 @@ export async function submitDonation(input: DonationInput): Promise<Result> {
     console.error("submitDonation:", error.message);
     return { ok: false, error: "Gagal menyimpan donasi. Coba lagi beberapa saat." };
   }
+
+  await kirimNotifikasiAdmin({
+    nama: v.donorName
+      ? v.isAnonymous
+        ? `${v.donorName} (anonim di publik)`
+        : v.donorName
+      : "Tanpa nama",
+    nominal: v.amount,
+    kampanye: (campaign.title as string) ?? "kampanye",
+    metode: channel.type === "qris" ? "QRIS" : "Transfer bank",
+  });
 
   revalidatePath("/");
   return { ok: true, slug: campaign.slug as string };
