@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth";
+import { kirimKonfirmasiDonasi } from "@/lib/emailjs";
 
 const UUID = z.string().uuid();
 const STATUSES = ["pending", "verified", "rejected"] as const;
@@ -39,6 +40,22 @@ export async function setDonationStatus(formData: FormData): Promise<void> {
     return redirect(`${backUrl}&error=${encodeURIComponent(error.message)}`);
   }
 
+  if (verified) {
+    const { data: d } = await supabase
+      .from("donations")
+      .select("amount,donor_name,donor_email,campaigns(title)")
+      .eq("id", id)
+      .single();
+    if (d) {
+      const camp = d.campaigns as unknown as { title: string } | null;
+      await kirimKonfirmasiDonasi({
+        email: d.donor_email,
+        nama: d.donor_name,
+        nominal: Number(d.amount),
+        kampanye: camp?.title ?? "kampanye kami",
+      });
+    }
+}
   revalidatePath("/admin/donasi");
   revalidatePath("/admin");
   revalidatePath("/");
