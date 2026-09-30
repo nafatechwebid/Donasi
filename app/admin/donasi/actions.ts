@@ -28,7 +28,7 @@ export async function setDonationStatus(formData: FormData): Promise<void> {
   if (!(STATUSES as readonly string[]).includes(status)) return redirect(backUrl);
 
   const verified = status === "verified";
-  const { error } = await supabase
+  let query = supabase
     .from("donations")
     .update({
       status,
@@ -36,11 +36,13 @@ export async function setDonationStatus(formData: FormData): Promise<void> {
       verified_at: verified ? new Date().toISOString() : null,
     })
     .eq("id", id);
+  if (verified) query = query.neq("status", "verified");
+  const { data: changed, error } = await query.select("id");
   if (error) {
     return redirect(`${backUrl}&error=${encodeURIComponent(error.message)}`);
   }
 
-  if (verified) {
+  if (verified && changed && changed.length > 0) {
     const { data: d } = await supabase
       .from("donations")
       .select("amount,donor_name,donor_email,campaigns(title)")
@@ -55,7 +57,8 @@ export async function setDonationStatus(formData: FormData): Promise<void> {
         kampanye: camp?.title ?? "kampanye kami",
       });
     }
-}
+  }
+  
   revalidatePath("/admin/donasi");
   revalidatePath("/admin");
   revalidatePath("/");
