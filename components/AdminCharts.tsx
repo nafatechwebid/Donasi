@@ -24,7 +24,7 @@ export default function AdminCharts({
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={monthly} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="label" tick={{ fontSize: 10 }} interval={0} />
+              <XAxis dataKey="label" tick={{ fontSize: 10 }} minTickGap={8} />
               <YAxis tickFormatter={short} tick={{ fontSize: 11 }} width={44} />
               <Tooltip formatter={(v) => rp(Number(v))} />
               <Bar dataKey="total" name="Donasi" fill="#0f6b57" radius={[4, 4, 0, 0]} />
