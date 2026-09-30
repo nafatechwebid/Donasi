@@ -19,7 +19,10 @@ export const donationSchema = z.object({
   proofUrl: z
     .string()
     .url("Unggah bukti pembayaran terlebih dahulu")
-    .startsWith("https://res.cloudinary.com/", "Bukti pembayaran harus diunggah lewat Cloudinary"),
+    .refine(
+      (v) => v.startsWith(`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/`),
+      "Bukti pembayaran harus diunggah lewat Cloudinary"
+    ),
   recurring: z.enum(["none", "weekly", "monthly"]),
   website: z.string().max(200),
 });
