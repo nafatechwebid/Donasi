@@ -38,7 +38,7 @@ export async function kirimKonfirmasiDonasi(p: {
   return kirim({
     to_email: p.email,
     subject: `Donasi Anda untuk ${p.kampanye} telah diverifikasi`,
-    label: "Bukti donasi",
+    label: "Konfirmasi donasi",
     judul: "Terima Kasih atas Donasi Anda",
     sapaan: `Assalamualaikum ${p.nama || "Hamba Allah"},`,
     intro: "Donasi Anda telah kami verifikasi. Berikut ringkasannya:",
