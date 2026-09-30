@@ -13,7 +13,7 @@ export default function LoginPage({
     <main className="flex min-h-screen flex-col items-center justify-center bg-neutral-50 px-4 py-10">
       <div className="w-full max-w-sm">
         <div className="flex flex-col items-center">
-          <img src="/icon-192.png" alt="Logo Donasi" width={56} height={56} className="rounded-xl" />
+          <img src="/logo.png" alt="Logo Donasi" width={64} height={64} />
           <h1 className="mt-4 font-serif text-2xl text-neutral-900">Masuk ke Donasi</h1>
         </div>
 
