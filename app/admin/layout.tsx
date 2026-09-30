@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { signOut } from "@/lib/signout-action";
 
 const links: { href: string; label: string }[] = [
   { href: "/admin", label: "Dasbor" },
@@ -24,6 +25,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               {l.label}
             </Link>
           ))}
+          <form action={signOut}>
+            <button
+              type="submit"
+              className="whitespace-nowrap rounded-md px-3 py-2 text-red-700 hover:bg-red-50"
+            >
+              Keluar
+            </button>
+          </form>
         </div>
       </nav>
       {children}
