@@ -17,8 +17,9 @@ export async function requestReset(formData: FormData): Promise<void> {
 
   const supabase = createClient();
   // Hasil sengaja diabaikan agar orang tidak bisa menebak email mana yang terdaftar.
-  await supabase.auth.resetPasswordForEmail(email, {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${proto}://${host}/auth/reset`,
   });
+  if (error) console.error("resetPasswordForEmail:", error.message);
   redirect("/lupa-sandi?ok=1");
 }
