@@ -2,15 +2,19 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/lib/signout-action";
 
-export default async function SiteHeader() {
+// narrow = true: lebar header mengikuti halaman sempit (mis. detail kampanye, max-w-3xl).
+// Tailwind butuh nama kelas utuh, jadi jangan disusun dari potongan string.
+export default async function SiteHeader({ narrow = false }: { narrow?: boolean }) {
   const supabase = createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const width = narrow ? "max-w-3xl" : "max-w-5xl";
+
   return (
     <header className="sticky top-0 z-10 border-b border-neutral-200 bg-white">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
+      <div className={`mx-auto flex ${width} items-center justify-between px-4 py-3`}>
         <Link href="/" className="font-serif text-lg text-brand-dark">
           Donasi
         </Link>
