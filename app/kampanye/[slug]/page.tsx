@@ -127,7 +127,7 @@ export default async function CampaignPage({ params }: Props) {
 
   return (
     <>
-      <SiteHeader />
+      <SiteHeader narrow />
       <main className={`mx-auto max-w-3xl px-4 py-6 ${canDonate ? "pb-28 sm:pb-6" : ""}`}>
         {img ? (
           <img src={img} alt={c.title} className="aspect-[1200/630] w-full rounded-xl object-cover" />
