@@ -7,12 +7,13 @@ const inputCls =
 export default function LoginPage({
   searchParams,
 }: {
-  searchParams: { error?: string };
+  searchParams: { error?: string; redirect?: string };
 }) {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-neutral-50 px-4 py-10">
       <div className="w-full max-w-sm">
         <div className="flex flex-col items-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo.png" alt="Logo Donasi" width={64} height={64} />
           <h1 className="mt-4 font-serif text-2xl text-neutral-900">Masuk ke Donasi</h1>
         </div>
@@ -25,6 +26,7 @@ export default function LoginPage({
           action={login}
           className="mt-5 flex flex-col gap-4 rounded-xl border border-neutral-200 bg-white p-5 shadow-sm"
         >
+          <input type="hidden" name="redirect" value={searchParams.redirect ?? ""} />
           <div>
             <label htmlFor="email" className="text-sm font-medium text-neutral-800">
               Alamat email
