@@ -21,6 +21,13 @@ const STATUS_LABEL: Record<string, string> = {
   rejected: "Ditolak",
 };
 
+// Menu pintasan admin. Tambah/ubah sesuai halaman yang ada di app/admin/.
+const ADMIN_MENU = [
+  { href: "/admin/kampanye", label: "Kampanye", desc: "Kelola & setujui kampanye" },
+  { href: "/admin/donasi", label: "Donasi", desc: "Verifikasi donasi masuk" },
+  { href: "/admin/pembayaran", label: "Pembayaran", desc: "Rekening bank & QRIS" },
+];
+
 const monthKey = (d: Date) => d.toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" }).slice(0, 7);
 
 export default async function AdminPage() {
@@ -70,10 +77,21 @@ export default async function AdminPage() {
   const recentRows = (recent.data ?? []) as unknown as RecentRow[];
 
   const card = "rounded-lg border border-neutral-200 p-4";
+  const linkCard = `${card} block transition hover:border-brand hover:bg-neutral-50`;
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-8">
       <h1 className="font-serif text-2xl text-brand-dark">Dasbor Admin</h1>
+
+      {/* Menu pintasan admin */}
+      <nav aria-label="Menu admin" className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {ADMIN_MENU.map((m) => (
+          <Link key={m.href} href={m.href} className={linkCard}>
+            <p className="font-medium text-brand-dark">{m.label}</p>
+            <p className="mt-1 text-xs text-neutral-500">{m.desc}</p>
+          </Link>
+        ))}
+      </nav>
 
       <div className="mt-6 grid grid-cols-2 gap-3">
         <div className={card}>
@@ -92,14 +110,14 @@ export default async function AdminPage() {
           <p className="text-xs text-neutral-500">Dana cadangan (belum disalurkan)</p>
           <p className="mt-1 text-lg font-semibold">{formatRupiah(balance)}</p>
         </div>
-        <Link href="/admin/donasi?status=pending" className={card}>
+        <Link href="/admin/donasi?status=pending" className={linkCard}>
           <p className="text-xs text-neutral-500">Donasi menunggu verifikasi</p>
           <p className="mt-1 text-lg font-semibold">{pd.count ?? 0}</p>
         </Link>
-        <div className={card}>
+        <Link href="/admin/kampanye" className={linkCard}>
           <p className="text-xs text-neutral-500">Kampanye menunggu approval</p>
           <p className="mt-1 text-lg font-semibold">{pc.count ?? 0}</p>
-        </div>
+        </Link>
       </div>
 
       <AdminCharts monthly={monthly} perCampaign={perCampaign} />
