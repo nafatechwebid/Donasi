@@ -71,9 +71,11 @@ export default async function KampanyePage({
                 className="flex gap-3 rounded-lg border border-neutral-200 p-3 hover:bg-neutral-50"
               >
                 {r.cover_image_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={r.cover_image_url}
                     alt=""
+                    loading="lazy"
                     className="h-16 w-16 flex-none rounded-md object-cover"
                   />
                 ) : (
