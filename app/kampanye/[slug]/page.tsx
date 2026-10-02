@@ -119,6 +119,7 @@ export default async function CampaignPage({ params }: Props) {
   const isClosed = c.status === "closed";
   const expired = Boolean(c.is_deadline_active && c.deadline && new Date(c.deadline).getTime() < Date.now());
   const totalSpent = expenditures.reduce((s, e) => s + Number(e.amount), 0);
+  const canDonate = !(isClosed || expired);
 
   const host = headers().get("host");
   const shareUrl = host ? `https://${host}/kampanye/${c.slug}` : "";
@@ -127,7 +128,7 @@ export default async function CampaignPage({ params }: Props) {
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-3xl px-4 py-6">
+      <main className={`mx-auto max-w-3xl px-4 py-6 ${canDonate ? "pb-28 sm:pb-6" : ""}`}>
         {img ? (
           <img src={img} alt={c.title} className="aspect-[1200/630] w-full rounded-xl object-cover" />
         ) : (
@@ -191,10 +192,20 @@ export default async function CampaignPage({ params }: Props) {
           ) : null}
         </section>
 
-        {c.story ? (
+        {c.story || c.short_description ? (
           <section className="mt-6">
-            <h2 className="font-serif text-xl text-brand-dark">Kisah</h2>
-            <p className="mt-2 whitespace-pre-line leading-relaxed text-neutral-800">{c.story}</p>
+            <h2 className="font-serif text-xl text-brand-dark">Kisah Selengkapnya</h2>
+            <p className="mt-2 whitespace-pre-line leading-relaxed text-neutral-800">
+              {c.story || c.short_description}
+            </p>
+            {canDonate ? (
+              <Link
+                href={`/kampanye/${c.slug}/donasi`}
+                className="mt-4 block w-full rounded-md bg-brand px-4 py-3 text-center text-white hover:bg-brand-dark"
+              >
+                Bantu dengan Donasi
+              </Link>
+            ) : null}
           </section>
         ) : null}
 
@@ -286,6 +297,26 @@ export default async function CampaignPage({ params }: Props) {
           )}
         </section>
       </main>
+
+      {canDonate ? (
+        <div
+          className="fixed inset-x-0 bottom-0 z-30 border-t border-neutral-200 bg-white px-4 pt-3 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] sm:hidden"
+          style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+        >
+          <div className="mx-auto flex max-w-3xl items-center gap-3">
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold text-brand-dark">{formatRupiah(collected)}</p>
+              <p className="text-xs text-neutral-500">terkumpul · {pct}%</p>
+            </div>
+            <Link
+              href={`/kampanye/${c.slug}/donasi`}
+              className="flex-none rounded-md bg-brand px-5 py-3 text-sm font-medium text-white hover:bg-brand-dark"
+            >
+              Donasi Sekarang
+            </Link>
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }
