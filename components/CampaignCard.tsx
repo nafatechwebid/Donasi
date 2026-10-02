@@ -27,6 +27,7 @@ export default function CampaignCard({ c }: { c: PublicCampaign }) {
   const img = cldUrl(c.cover_image_url, 600);
   const pct = progressPercent(Number(c.collected_amount), Number(c.target_amount));
   const left = daysLeft(c.deadline, c.is_deadline_active);
+  const canDonate = left !== "Berakhir";
 
   return (
     <div className="relative overflow-hidden rounded-xl border border-neutral-200 bg-white transition hover:shadow-md">
@@ -37,7 +38,7 @@ export default function CampaignCard({ c }: { c: PublicCampaign }) {
         ) : (
           <div className="aspect-[16/9] w-full bg-brand-light" />
         )}
-        <div className="p-4">
+        <div className="p-4 pb-3">
           {c.program_categories ? (
             <p className="text-xs text-brand">
               {c.program_categories.icon ? `${c.program_categories.icon} ` : ""}
@@ -48,6 +49,8 @@ export default function CampaignCard({ c }: { c: PublicCampaign }) {
           {c.short_description ? (
             <p className="mt-1 line-clamp-2 text-sm text-neutral-600">{c.short_description}</p>
           ) : null}
+          {/* Teks biasa (bukan link terpisah) karena seluruh area ini sudah berupa link */}
+          <span className="mt-1 inline-block text-sm font-medium text-brand">Baca selengkapnya →</span>
 
           <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-neutral-200">
             <div className="h-full bg-brand" style={{ width: `${pct}%` }} />
@@ -61,6 +64,17 @@ export default function CampaignCard({ c }: { c: PublicCampaign }) {
           </div>
         </div>
       </Link>
+
+      {canDonate ? (
+        <div className="px-4 pb-4">
+          <Link
+            href={`/kampanye/${c.slug}/donasi`}
+            className="block w-full rounded-md bg-brand px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-brand-dark"
+          >
+            Donasi Sekarang
+          </Link>
+        </div>
+      ) : null}
     </div>
   );
 }
