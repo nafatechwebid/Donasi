@@ -26,6 +26,7 @@ const ADMIN_MENU = [
   { href: "/admin/kampanye", label: "Kampanye", desc: "Kelola & setujui kampanye" },
   { href: "/admin/donasi", label: "Donasi", desc: "Verifikasi donasi masuk" },
   { href: "/admin/pembayaran", label: "Pembayaran", desc: "Rekening bank & QRIS" },
+  { href: "/admin/pengaturan", label: "Pengaturan Situs", desc: "Logo, favicon & teks" },
 ];
 
 const monthKey = (d: Date) => d.toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" }).slice(0, 7);
