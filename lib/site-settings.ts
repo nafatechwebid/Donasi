@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
+import { DEFAULT_BRAND, isHex } from "@/lib/theme";
 
 export type SiteSettings = {
   site_name: string;
@@ -7,6 +8,7 @@ export type SiteSettings = {
   hero_subtitle: string;
   logo_url: string | null;
   favicon_url: string | null;
+  brand_color: string;
 };
 
 // Dipakai bila tabel kosong / belum dibuat, supaya situs tidak error.
@@ -17,16 +19,14 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     "Salurkan donasimu untuk program kemanusiaan, pendidikan, dan kesehatan. Setiap penyaluran dilaporkan secara terbuka.",
   logo_url: null,
   favicon_url: null,
+  brand_color: DEFAULT_BRAND,
 };
 
-// cache() = satu kali query per request, walau dipanggil dari header, beranda, dan metadata.
+// cache() = satu kali query per request, walau dipanggil dari layout, header, beranda, dan metadata.
 export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
   const supabase = createClient();
-  const { data } = await supabase
-    .from("site_settings")
-    .select("site_name,hero_title,hero_subtitle,logo_url,favicon_url")
-    .eq("id", 1)
-    .maybeSingle();
+  // select("*") agar tetap aman walau kolom baru (mis. brand_color) belum ditambahkan di database
+  const { data } = await supabase.from("site_settings").select("*").eq("id", 1).maybeSingle();
 
   const row = (data ?? {}) as Partial<SiteSettings>;
   return {
@@ -35,5 +35,6 @@ export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
     hero_subtitle: row.hero_subtitle?.trim() || DEFAULT_SETTINGS.hero_subtitle,
     logo_url: row.logo_url || null,
     favicon_url: row.favicon_url || null,
+    brand_color: row.brand_color && isHex(row.brand_color) ? row.brand_color : DEFAULT_BRAND,
   };
 });
