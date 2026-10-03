@@ -2,6 +2,7 @@ import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
 import CampaignCard, { type PublicCampaign } from "@/components/CampaignCard";
 import { createClient } from "@/lib/supabase/server";
+import { getSiteSettings } from "@/lib/site-settings";
 
 type Category = { id: string; name: string; slug: string; icon: string | null };
 
@@ -11,6 +12,7 @@ export default async function HomePage({
   searchParams: { kategori?: string };
 }) {
   const supabase = createClient();
+  const settings = await getSiteSettings();
 
   const { data: cats } = await supabase
     .from("program_categories")
@@ -40,11 +42,8 @@ export default async function HomePage({
       <SiteHeader />
       <main className="mx-auto max-w-5xl px-4 py-8">
         <section className="rounded-2xl bg-brand-light px-6 py-8">
-          <h1 className="font-serif text-3xl text-brand-dark">Bersama Meringankan Beban</h1>
-          <p className="mt-2 max-w-xl text-neutral-700">
-            Salurkan donasimu untuk program kemanusiaan, pendidikan, dan kesehatan. Setiap penyaluran
-            dilaporkan secara terbuka.
-          </p>
+          <h1 className="font-serif text-3xl text-brand-dark">{settings.hero_title}</h1>
+          <p className="mt-2 max-w-xl text-neutral-700">{settings.hero_subtitle}</p>
         </section>
 
         {categories.length > 0 ? (
