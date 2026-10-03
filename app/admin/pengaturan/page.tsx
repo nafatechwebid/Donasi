@@ -1,5 +1,6 @@
 import { requireAdmin } from "@/lib/auth";
 import { getSiteSettings } from "@/lib/site-settings";
+import { deriveTheme } from "@/lib/theme";
 import CloudinaryUpload from "@/components/CloudinaryUpload";
 import SubmitButton from "@/components/SubmitButton";
 import { saveSettings } from "./actions";
@@ -14,6 +15,7 @@ export default async function PengaturanPage({
 }) {
   await requireAdmin();
   const s = await getSiteSettings();
+  const t = deriveTheme(s.brand_color);
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-8">
@@ -50,6 +52,29 @@ export default async function PengaturanPage({
             className={inputCls}
           />
         </label>
+
+        <div className="rounded-lg border border-neutral-200 p-4">
+          <p className="text-sm font-medium text-neutral-800">Warna tema</p>
+          <p className="mt-1 text-xs text-neutral-500">
+            Dipakai untuk tombol, judul, dan aksen. Pilih warna yang cukup gelap agar teks putih tetap terbaca.
+          </p>
+          <div className="mt-3 flex items-center gap-3">
+            <input
+              type="color"
+              name="brand_color"
+              defaultValue={s.brand_color}
+              aria-label="Warna tema"
+              className="h-12 w-16 cursor-pointer rounded border border-neutral-300 bg-white p-1"
+            />
+            <span className="text-sm text-neutral-600">Saat ini: {s.brand_color.toUpperCase()}</span>
+          </div>
+          <div className="mt-3 flex items-center gap-2 text-xs text-neutral-600">
+            <span className="h-8 w-8 rounded" style={{ backgroundColor: t.hex }} title="Utama" />
+            <span className="h-8 w-8 rounded" style={{ backgroundColor: t.darkHex }} title="Gelap" />
+            <span className="h-8 w-8 rounded border border-neutral-200" style={{ backgroundColor: t.lightHex }} title="Terang" />
+            <span>Utama · gelap · terang (otomatis)</span>
+          </div>
+        </div>
 
         <div className="rounded-lg border border-neutral-200 p-4">
           <p className="text-sm font-medium text-neutral-800">Logo</p>
