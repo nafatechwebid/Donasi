@@ -9,10 +9,10 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          DEFAULT: "#0F6E5B",   // hijau tua — kepercayaan, kemanusiaan
-          light: "#E7F3EF",
-          dark: "#0A4F41",
-        },
+  DEFAULT: "rgb(var(--brand, 15 110 91) / <alpha-value>)",
+  dark: "rgb(var(--brand-dark, 11 77 64) / <alpha-value>)",
+  light: "rgb(var(--brand-light, 233 247 244) / <alpha-value>)",
+},
         accent: "#E8A33D",       // kuning keemasan — aksen donasi/urgensi
       },
       fontFamily: {
