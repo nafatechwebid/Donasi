@@ -1,13 +1,13 @@
 import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
+  // Situs demo: larang semua mesin pencari
+  if (process.env.NEXT_PUBLIC_DEMO === "true") {
+    return { rules: { userAgent: "*", disallow: "/" } };
+  }
   const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.donasipeduli.web.id";
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: ["/admin", "/dashboard", "/login", "/register", "/reset-sandi", "/auth"],
-    },
+    rules: { userAgent: "*", allow: "/", disallow: ["/admin", "/dashboard", "/login", "/register", "/reset-sandi", "/auth"] },
     sitemap: `${base}/sitemap.xml`,
   };
 }
