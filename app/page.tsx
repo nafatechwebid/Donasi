@@ -37,8 +37,8 @@ export default async function HomePage({
 
   return (
     <>
-      <SiteHeader narrow />
-      <main className="mx-auto max-w-3xl px-4 py-8">
+      <SiteHeader />
+      <main className="mx-auto max-w-5xl px-4 py-8">
         <section className="rounded-2xl bg-brand-light px-6 py-8">
           <h1 className="font-serif text-3xl text-brand-dark">Bersama Meringankan Beban</h1>
           <p className="mt-2 max-w-xl text-neutral-700">
@@ -70,9 +70,14 @@ export default async function HomePage({
         {campaigns.length === 0 ? (
           <p className="mt-4 text-neutral-500">Belum ada kampanye aktif di kategori ini.</p>
         ) : (
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          // Kolom menyesuaikan otomatis: 1 kartu = selebar header, 2 kartu = 2 kolom, ... maksimal 4 kolom
+          // (lebar min. tiap kartu 220px, lebar halaman max-w-5xl). Kartu ke-5 dst turun ke baris berikutnya.
+          <div
+            className="mt-4 grid gap-4"
+            style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))" }}
+          >
             {campaigns.map((c) => (
-              <CampaignCard key={c.id} c={c} />
+              <CampaignCard key={c.id} c={c} wide={campaigns.length === 1} />
             ))}
           </div>
         )}
