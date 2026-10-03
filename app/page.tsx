@@ -37,8 +37,8 @@ export default async function HomePage({
 
   return (
     <>
-      <SiteHeader />
-      <main className="mx-auto max-w-5xl px-4 py-8">
+      <SiteHeader narrow />
+      <main className="mx-auto max-w-3xl px-4 py-8">
         <section className="rounded-2xl bg-brand-light px-6 py-8">
           <h1 className="font-serif text-3xl text-brand-dark">Bersama Meringankan Beban</h1>
           <p className="mt-2 max-w-xl text-neutral-700">
@@ -70,7 +70,7 @@ export default async function HomePage({
         {campaigns.length === 0 ? (
           <p className="mt-4 text-neutral-500">Belum ada kampanye aktif di kategori ini.</p>
         ) : (
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
             {campaigns.map((c) => (
               <CampaignCard key={c.id} c={c} />
             ))}
